@@ -1,0 +1,18 @@
+{
+  "type": "module",
+  "name": "apex_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.25.0",
+    "discord.js": "^11.6.4",
+    "dotenv": "^14.2.0"
+  }
+}
