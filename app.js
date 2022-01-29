@@ -32,16 +32,16 @@ client.on('message', async msg => {
     }
 })
 
-getTimeAndMap()
+getTimeAndMap(false)
 
 // Runs every 30 minutes
 cron.schedule('*/30 * * * *', async () => {
-    getTimeAndMap()
+    getTimeAndMap(true)
 })
 
-async function getTimeAndMap() {
+async function getTimeAndMap(isApicall) {
 
-    if(interval != '') {
+    if(interval != '' || isApicall) {
         clearInterval(interval)
     }
 
