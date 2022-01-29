@@ -9,7 +9,8 @@ let baseUrl = `https://api.mozambiquehe.re/`
 let mapEndpoint = 'maprotation?version=2'
 let auth = `&auth=${process.env.APEX_API_KEY}`
 let mainchat = '113408712395264000'
-let interval
+let interval = ''
+let newRemainingTimeString = ''
 
 let callApexApi = async _ => {
     let url = baseUrl+mapEndpoint+auth
@@ -21,7 +22,6 @@ let callApexApi = async _ => {
         console.log(e)
     }
 }
-client.login(process.env.CLIENT_TOKEN)
 
 client.on('message', async msg => {
     if (msg.content.toLowerCase() === 'apexmap' || msg.content.toLowerCase() === 'apex map') {
@@ -40,24 +40,49 @@ cron.schedule('*/30 * * * *', async () => {
 })
 
 async function getTimeAndMap() {
-    clearInterval(interval)
+
+    if(interval != '') {
+        clearInterval(interval)
+    }
+
     let response = await callApexApi()
     let currentMap = response.map
     let timeLeft = response.remainingSecs
-    let hours   = Math.floor(timeLeft / 3600)
-    let minutes = Math.floor((timeLeft - (hours * 3600)) / 60)
-    let apa = minutes < 10 ? minutes : 33
+    let clock = 60
+
+    newRemainingTimeString = updateRemainingTime(timeLeft)
+    updateDiscordStatus(currentMap, newRemainingTimeString)
 
     interval = setInterval( _ => {
         timeLeft -= 1
-        client.user.setPresence({
-            status: "online",  // You can show online, idle... Do not disturb is dnd
-            game: {
-                name: `${currentMap} - ${hours}h ${minutes}m`,  // The message shown
-                type: "PLAYING" // PLAYING, WATCHING, LISTENING, STREAMING,
-            }
-        })
-
+        clock -= 1
+        if(clock === 0) {
+            newRemainingTimeString = updateRemainingTime(timeLeft)
+            clock = 60
+            updateDiscordStatus(currentMap, newRemainingTimeString)
+        }
     }, 1000)
 
 }
+
+function updateDiscordStatus(currentMap, remainingTime) {
+    console.log(`${currentMap} ${remainingTime}`);
+    client.user.setPresence({
+        status: "online",  // You can show online, idle... Do not disturb is dnd
+        game: {
+            name: `${currentMap} ${remainingTime}`,  // The message shown
+            type: "PLAYING" // PLAYING, WATCHING, LISTENING, STREAMING,
+        }
+    })
+}
+
+function updateRemainingTime(timeLeft) {
+    let hours = Math.floor(timeLeft / 3600)
+    let hoursString = Math.floor(timeLeft / 3600) < 1 ? '' : `${Math.floor(timeLeft / 3600)}h`
+    let minutes = Math.floor((timeLeft - (hours * 3600)) / 60)+'m'
+    return `${hoursString} ${minutes}`
+}
+
+
+
+client.login(process.env.CLIENT_TOKEN)
