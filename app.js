@@ -67,14 +67,16 @@ async function getTimeAndMap(isApicall) {
 
 function updateDiscordStatus(currentMap, remainingTime) {
     console.log(`${currentMap} ${remainingTime}`);
-    client.on('ready', _ => {
-        client.user.setPresence({
-            status: "online",  // You can show online, idle... Do not disturb is dnd
-            game: {
-                name: `${currentMap} ${remainingTime}`,  // The message shown
-                type: "PLAYING" // PLAYING, WATCHING, LISTENING, STREAMING,
-            }
-        })
+    client.on('ready', client => {
+        console.log('client data:');
+        console.log(client);
+    })
+    client.user.setPresence({
+        status: "online",  // You can show online, idle... Do not disturb is dnd
+        game: {
+            name: `${currentMap} ${remainingTime}`,  // The message shown
+            type: "PLAYING" // PLAYING, WATCHING, LISTENING, STREAMING,
+        }
     })
 }
 
