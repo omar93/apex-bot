@@ -34,7 +34,10 @@ client.on('message', async msg => {
     }
 })
 
-getTimeAndMap(false)
+
+client.login(process.env.CLIENT_TOKEN).then(_ => {
+    getTimeAndMap(false)
+})
 
 // Runs every 30 minutes
 cron.schedule('*/30 * * * *', async () => {
@@ -70,16 +73,14 @@ async function getTimeAndMap(isApicall) {
 function updateDiscordStatus(currentMap, remainingTime) {
 
     console.log(`${currentMap} ${remainingTime}`)
-    client.login(process.env.CLIENT_TOKEN).then(_ => {
-        client.user.setPresence({
-            status: "online",  // You can show online, idle... Do not disturb is dnd
-            game: {
-                name: `${currentMap} ${remainingTime}`,  // The message shown
-                type: "PLAYING" // PLAYING, WATCHING, LISTENING, STREAMING,
-            }
-        })
-    })
 
+    client.user.setPresence({
+        status: "online",  // You can show online, idle... Do not disturb is dnd
+        game: {
+            name: `${currentMap} ${remainingTime}`,  // The message shown
+            type: "PLAYING" // PLAYING, WATCHING, LISTENING, STREAMING,
+        }
+    })
 }
 
 function updateRemainingTime(timeLeft) {
