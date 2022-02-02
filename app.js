@@ -1,8 +1,10 @@
 import dotenv from 'dotenv'
-dotenv.config()
 import Discord from 'discord.js'
 import cron from 'node-cron'
 import axios from 'axios'
+
+dotenv.config()
+
 const client = new Discord.Client()
 
 let baseUrl = `https://api.mozambiquehe.re/`
@@ -66,18 +68,18 @@ async function getTimeAndMap(isApicall) {
 }
 
 function updateDiscordStatus(currentMap, remainingTime) {
-    console.log(`${currentMap} ${remainingTime}`);
-    client.on('ready', client => {
-        console.log('client data:');
-        console.log(client);
+
+    console.log(`${currentMap} ${remainingTime}`)
+    client.login(process.env.CLIENT_TOKEN).then(_ => {
+        client.user.setPresence({
+            status: "online",  // You can show online, idle... Do not disturb is dnd
+            game: {
+                name: `${currentMap} ${remainingTime}`,  // The message shown
+                type: "PLAYING" // PLAYING, WATCHING, LISTENING, STREAMING,
+            }
+        })
     })
-    client.user.setPresence({
-        status: "online",  // You can show online, idle... Do not disturb is dnd
-        game: {
-            name: `${currentMap} ${remainingTime}`,  // The message shown
-            type: "PLAYING" // PLAYING, WATCHING, LISTENING, STREAMING,
-        }
-    })
+
 }
 
 function updateRemainingTime(timeLeft) {
@@ -86,7 +88,3 @@ function updateRemainingTime(timeLeft) {
     let minutes = Math.floor((timeLeft - (hours * 3600)) / 60)+'m'
     return `${hoursString} ${minutes}`
 }
-
-
-
-client.login(process.env.CLIENT_TOKEN)
