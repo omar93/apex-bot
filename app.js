@@ -40,8 +40,8 @@ client.login(process.env.CLIENT_TOKEN).then(_ => {
     getTimeAndMap(false)
 })
 
-// Runs every 30 minutes
-cron.schedule('*/30 * * * *', async () => {
+// Runs every 1 and 31 minutes, ex: 15:01 -> 15:31
+cron.schedule('1,31 * * * *', async () => {
     getTimeAndMap(true)
 })
 
