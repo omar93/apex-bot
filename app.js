@@ -25,8 +25,9 @@ let callApexApi = async _ => {
     }
 }
 
-client.on('message', async msg => {
-    if (msg.content.toLowerCase() === 'apexmap' || msg.content.toLowerCase() === 'apex map') {
+client.on('message', async message => {
+    let msg = message.toString().toLowerCase()
+    if (msg === 'apexmap' || msg === 'apex map' || msg === '.am') {
         let currentMapData = await callApexApi()
         let map = currentMapData
         const channel = client.channels.get(mainchat)
